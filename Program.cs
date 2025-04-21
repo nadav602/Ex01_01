@@ -79,17 +79,18 @@ namespace Ex01_01
         }
         private static void printDecimalNumbersDescendingOrder(int[] i_decimalNumbersArray)
         {
-            Array.Sort(i_decimalNumbersArray);
-            Array.Reverse(i_decimalNumbersArray);
+            int[] i_decimalNumbersArrayTemporary = (int[])i_decimalNumbersArray.Clone(); 
+            Array.Sort(i_decimalNumbersArrayTemporary);
+            Array.Reverse(i_decimalNumbersArrayTemporary);
 
-            Console.WriteLine("Decimal numbers in descending order:");
+            Console.Write("Decimal numbers in descending order: ");
 
-            for (int i = 0; i < i_decimalNumbersArray.Length - 1; i++)
+            for (int i = 0; i < i_decimalNumbersArrayTemporary.Length - 1; i++)
             {
-                Console.Write(i_decimalNumbersArray[i] + ", ");
+                Console.Write(i_decimalNumbersArrayTemporary[i] + ", ");
             }
 
-            Console.WriteLine(i_decimalNumbersArray[i_decimalNumbersArray.Length - 1]);
+            Console.WriteLine(i_decimalNumbersArrayTemporary[i_decimalNumbersArrayTemporary.Length - 1]);
         }
         private static void printDecimalAverage(int[] i_decimalNumbersArray)
         {
