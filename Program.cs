@@ -1,217 +1,134 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Ex01_01
+namespace Ex01_05
 {
-    class Program
+    internal class Program
     {
         static void Main()
         {
-            int numOfBinaryNumbers = 4; 
-
-            int[] binaryNumbersArray, decimalNumbersArray;
-
-            binaryNumbersArray = requestInputFromUser(numOfBinaryNumbers); 
-            decimalNumbersArray = parseBinaryArrayToDecimalArray(numOfBinaryNumbers, binaryNumbersArray);
-            printDecimalNumbersDescendingOrder(decimalNumbersArray);
-            printDecimalAverage(decimalNumbersArray);
-            LongestOnesSequence(binaryNumbersArray);
-            maxDigitsChanges(binaryNumbersArray);
-            findNumberWithMaxAmountOfOnes(binaryNumbersArray, decimalNumbersArray);
-            MaximumOnesInNumberInArray(binaryNumbersArray);
+            string number = getNumberFromUser();
+            countDigitsSmallerThanFirst(number);
+            countDigitsDiviedByThree(number);
+            biggestDiffrenceBetweenDigits(number);
+            mostCommonDigit(number);
         }
-
-        private static int[] requestInputFromUser(int i_numOfBinaryNumbers) 
+        private static bool IsAllDigits(string number)
         {
-            int[] binaryNumbersArray = new int[i_numOfBinaryNumbers];
-            string input;
-
-            Console.WriteLine("Please enter " + i_numOfBinaryNumbers + " binary numbers with 7 digits each");
-
-            for (int i = 0; i < i_numOfBinaryNumbers; i++)
-            {
-                Console.Write("Number " + (i + 1) + ": ");
-                input = Console.ReadLine();
-                bool isValid = checkInputFromUser(input);
-                while (!isValid)
-                {
-                    Console.WriteLine("illegal input, Please enter binary number with exactly 7 digits");
-                    input = Console.ReadLine();
-                    isValid = checkInputFromUser(input);
-                }
-
-                binaryNumbersArray[i] = int.Parse(input);
-            }
-
-            return binaryNumbersArray;
-        }
-        private static bool checkInputFromUser(string i_input) 
-        {
-            int inputLength = i_input.Length;
             bool valid = true;
 
-            valid = (inputLength == 7);
-
-            for (int i = 0; i < inputLength; i++)
+            foreach (char currentChar in number)
             {
-                valid = (i_input[i] == '0' || i_input[i] == '1');
+                if (!char.IsDigit(currentChar))
+                    valid = false;
             }
 
             return valid;
         }
-        private static int[] parseBinaryArrayToDecimalArray(int i_numOfBinaryNumbers, int[] i_binaryNumbersArray) 
+        private static string getNumberFromUser()
         {
-            int[] decimalNumbersArray = new int[i_numOfBinaryNumbers];
+            bool valid = false;
+            Console.Write("Please enter an 8-digit number: ");
+            string number = Console.ReadLine();
 
-            for (int i = 0; i < i_numOfBinaryNumbers; i++)
+            valid = (number.Length == 8 && IsAllDigits(number));
+
+            while (!valid)
             {
-                int currentBinaryNumberInArray = i_binaryNumbersArray[i];
-                int currentDecimalNumber = 0;
+                Console.WriteLine("Error: Input must be exactly 8 digits, Please enter an 8-digit number: ");
+                number = Console.ReadLine();
+                valid = (number.Length == 8 && IsAllDigits(number));
+            }
 
-                for (int j = 0; j < 7; j++)
+            return number;
+        }
+        private static void countDigitsSmallerThanFirst(string number)
+        {
+            int amountOfDigitsSmallerThenLeftest = 0; 
+
+            char firstDigitInString = number[0];
+            int firstDigitInInt = firstDigitInString - '0';
+
+            for (int i = 0; i < number.Length; i++)
+            {
+                char currentChar = number[i];
+                int currentDigit = currentChar - '0';
+                if (currentDigit < firstDigitInInt)
                 {
-                    currentDecimalNumber += (currentBinaryNumberInArray % 10) * (int)Math.Pow(2, j);
-                    currentBinaryNumberInArray /= 10;
-                }
-                decimalNumbersArray[i] = currentDecimalNumber; ;
-            }
-
-            return decimalNumbersArray;
-        }
-        private static void printDecimalNumbersDescendingOrder(int[] i_decimalNumbersArray)
-        {
-            int[] i_decimalNumbersArrayTemporary = (int[])i_decimalNumbersArray.Clone(); 
-            Array.Sort(i_decimalNumbersArrayTemporary);
-            Array.Reverse(i_decimalNumbersArrayTemporary);
-
-            Console.Write("Decimal numbers in descending order: ");
-
-            for (int i = 0; i < i_decimalNumbersArrayTemporary.Length - 1; i++)
-            {
-                Console.Write(i_decimalNumbersArrayTemporary[i] + ", ");
-            }
-
-            Console.WriteLine(i_decimalNumbersArrayTemporary[i_decimalNumbersArrayTemporary.Length - 1]);
-        }
-        private static void printDecimalAverage(int[] i_decimalNumbersArray)
-        {
-            int sumOfNumbersInArray = 0;
-            int arrLength = i_decimalNumbersArray.Length;
-
-            for (int i = 0; i < arrLength; i++)
-            {
-                sumOfNumbersInArray += i_decimalNumbersArray[i];
-            }
-
-            float averageNumberInArray = (float)sumOfNumbersInArray / arrLength;
-            Console.WriteLine("Average value: " + averageNumberInArray);
-        }
-        private static void LongestOnesSequence(int[] i_binaryNumbersArray)
-        {
-            int longestStreakFound = 0;
-            int numberWithLongestStreak = 0;
-
-            foreach (int currentNumberInArray in i_binaryNumbersArray)
-            {
-                int copyOfCurrentNumInArray = currentNumberInArray;
-                int currentStreak = 0;
-
-                while (copyOfCurrentNumInArray > 0)
-                {
-                    int RightestDigitOfCurrentNumInArrayCopy = copyOfCurrentNumInArray % 10;
-                    if (RightestDigitOfCurrentNumInArrayCopy == 1)
-                    {
-                        currentStreak++;
-                    }
-                    else
-                    {
-                        currentStreak = 0;
-                    }
-                    copyOfCurrentNumInArray /= 10;
+                    amountOfDigitsSmallerThenLeftest++;
                 }
 
-                if (currentStreak > longestStreakFound)
+            }
+
+            Console.WriteLine($"Number of digits smaller than the first: {amountOfDigitsSmallerThenLeftest}");
+        }
+        private static void countDigitsDiviedByThree(string number)
+        {
+            int amountOfDigitsDividedByThree = 0;
+
+            for (int i = 0; i < number.Length; i++)
+            {
+                char currentCharInNumberInString = number[i];
+                int currentDigit = currentCharInNumberInString - '0';
+
+                if (currentDigit % 3 == 0)
                 {
-                    longestStreakFound = currentStreak;
-                    numberWithLongestStreak = currentNumberInArray;
+                    amountOfDigitsDividedByThree++;
                 }
             }
 
-            Console.WriteLine($"Longest streak of ones found is: {longestStreakFound} (from number: {numberWithLongestStreak.ToString().PadLeft(7, '0')})");
+            Console.WriteLine($"Number of digits divisible by three is: {amountOfDigitsDividedByThree}");
         }
-        private static void maxDigitsChanges(int[] i_binaryNumbersArray)
+        private static void biggestDiffrenceBetweenDigits(string number)
         {
-            Console.Write("Amount of switches: ");
-            for (int j = 0; j < i_binaryNumbersArray.Length; j++)
-            {
-                int currentNumberInArray = i_binaryNumbersArray[j]; 
-                int changesInCurrentNumber = 0;
-                string StringOfCurrentBinaryNumber = currentNumberInArray.ToString().PadLeft(7, '0');
+            int maximumDigitInNumber = int.MinValue;
+            int minimumDigitInNumber = int.MaxValue;
 
-                for (int i = 1; i < StringOfCurrentBinaryNumber.Length; i++)
+            foreach (char currentChar in number)
+            {
+                int currentDigit = currentChar - '0';
+
+                if (currentDigit > maximumDigitInNumber)
                 {
-                    if (StringOfCurrentBinaryNumber[i] != StringOfCurrentBinaryNumber[i - 1])
+                    maximumDigitInNumber = currentDigit;
+                }
+
+                if (currentDigit < minimumDigitInNumber)
+                {
+                    minimumDigitInNumber = currentDigit;
+                }
+            }
+
+            Console.WriteLine($"Biggest difference between the largest and smallest digit is: {maximumDigitInNumber - minimumDigitInNumber}");
+        }
+        private static void mostCommonDigit(string number)
+        {
+            int mostCommonCounter = 0;
+            char mostCommonDigit = ' ';
+
+            for (char digit = '0'; digit <= '9'; digit++)
+            {
+                int currentCounter = 0;
+
+                foreach (char currentDigitChar in number)
+                {
+                    if (currentDigitChar == digit)
                     {
-                        changesInCurrentNumber++;
+                        currentCounter++;
                     }
                 }
-                Console.Write($"{changesInCurrentNumber} ({StringOfCurrentBinaryNumber})");
-                if (j < i_binaryNumbersArray.Length - 1)
-                {
-                    Console.Write(", ");
-                }
-                
-            }
 
-            Console.WriteLine();
-        }
-        private static void findNumberWithMaxAmountOfOnes(int[] i_binaryNumbersArray, int[] i_decimalNumbersArray)
-        {
-
-            int maxAmountOfOnes = -1;
-            int numberWithMaxAmountOfOnesIndex = 0;
-
-            for (int i = 0; i < i_binaryNumbersArray.Length; i++)
-            {
-                int currentNumberInArray = i_binaryNumbersArray[i];
-                int copyCurrentNumberInArray = currentNumberInArray;
-                int countOnes = 0;
-                while (copyCurrentNumberInArray>0)
+                if (currentCounter > mostCommonCounter)
                 {
-                    int leftestDigit = copyCurrentNumberInArray % 10;
-                    if (leftestDigit ==  1)
-                    {
-                        countOnes++;
-                    }
-                    copyCurrentNumberInArray /= 10;
-                }
-                
-                if (countOnes > maxAmountOfOnes)
-                {
-                    maxAmountOfOnes = countOnes;
-                    numberWithMaxAmountOfOnesIndex = i;
+                    mostCommonCounter = currentCounter;
+                    mostCommonDigit = digit;
                 }
             }
 
-            string fullBinaryNumberWithMaxAmountOfOnes = i_binaryNumbersArray[numberWithMaxAmountOfOnesIndex].ToString().PadLeft(7, '0');
-            string decimalNumerWithMaxAmountOfOnes = i_decimalNumbersArray[numberWithMaxAmountOfOnesIndex].ToString();
-            Console.WriteLine($"The number with the most ones is: {decimalNumerWithMaxAmountOfOnes} (binary: {fullBinaryNumberWithMaxAmountOfOnes})");
-        }
-        private static void MaximumOnesInNumberInArray(int[] i_binaryNumbersArray)
-        {
-            int totalOnesInCurrentNumber = 0;
-
-            foreach (int currentNumInArray in i_binaryNumbersArray)
-            {
-                string stringOfBinaryNumber = currentNumInArray.ToString().PadLeft(7, '0');
-
-                foreach (char currentCharacter in stringOfBinaryNumber)
-                {
-                    if (currentCharacter == '1')
-                        totalOnesInCurrentNumber++;
-                }
-            }
-
-            Console.WriteLine("Total number of '1's: " + totalOnesInCurrentNumber);
+            Console.WriteLine($"Most common digits is: {mostCommonDigit} (appears: {mostCommonCounter} times)");
         }
     }
 }
